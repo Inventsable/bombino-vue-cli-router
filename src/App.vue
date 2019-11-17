@@ -16,16 +16,18 @@
 // https://github.com/Inventsable/starlette
 import starlette from "starlette";
 
+// Dynamic identification object that reports all panel and host information:
+// https://github.com/Inventsable/CEP-Spy
+import spy from "cep-spy";
+
 // Utility components
 // https://github.com/Inventsable/cep-vue-cli-router2x#components
-import identity from "./components/main/identity.vue";
 import menus from "./components/main/menus.vue";
 import version from "./components/main/version.vue";
 
 export default {
   name: "App",
   components: {
-    identity,
     menus,
     version
   },
@@ -47,9 +49,7 @@ export default {
 
     // Utility components are already mounted prior to this
     console.log(
-      `${this.identity.extName} ${this.identity.extVersion} : ${
-        this.identity.isDev ? "DEV" : "BUILD"
-      }`
+      `${spy.extName} ${spy.extVersion} : ${spy.isDev ? "DEV" : "BUILD"}`
     );
     this.isMounted = true;
 
@@ -68,7 +68,7 @@ export default {
     },
     loadScript(path) {
       // Correctly loads a script regardless of whether Animate or regular CEP app
-      if (!/FLPR/.test(this.identity.appName))
+      if (!/FLPR/.test(spy.appName))
         this.csInterface.evalScript(`$.evalFile('${path}')`);
       else
         this.csInterface.evalScript(
@@ -78,38 +78,36 @@ export default {
     loadUniversalScripts() {
       // Preloads any script located inside ./src/host/universal
       let utilFolder = window.cep.fs.readdir(
-        `${this.identity.root}/src/host/universal/`
+        `${spy.path.root}/src/host/universal/`
       );
       if (!utilFolder.err) {
         let valids = utilFolder.data.filter(file => {
           return /\.(jsx|jsfl)$/.test(file);
         });
         valids.forEach(file => {
-          this.loadScript(`${this.identity.root}/src/host/universal/${file}`);
+          this.loadScript(`${spy.path.root}/src/host/universal/${file}`);
         });
       }
       // Preloads any script located in ./src/host/[appName]/
       let hostFolder = window.cep.fs.readdir(
-        `${this.identity.root}/src/host/${this.identity.appName}/`
+        `${spy.path.root}/src/host/${spy.appName}/`
       );
       if (!hostFolder.err) {
         let valids = hostFolder.data.filter(file => {
           return /\.(jsx|jsfl)$/.test(file);
         });
         valids.forEach(file => {
-          this.loadScript(
-            `${this.identity.root}/src/host/${this.identity.appName}/${file}`
-          );
+          this.loadScript(`${spy.path.root}/src/host/${spy.appName}/${file}`);
         });
       } else {
         console.log(
-          `${this.identity.root}/src/host/${this.identity.appName} has no valid files or does not exist`
+          `${spy.path.root}/src/host/${spy.appName} has no valid files or does not exist`
         );
       }
     },
     consoler(msg) {
       // Catches all console.log() usage in .jsx files via CSEvent
-      console.log(`${this.identity.appName}: ${msg.data}`);
+      console.log(`${spy.appName}: ${msg.data}`);
     },
     getCSS(prop) {
       // Returns current value of CSS variable

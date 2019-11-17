@@ -1,8 +1,10 @@
 <template>
-  <div class="versionFoot">{{version}}</div>
+  <div class="versionFoot">{{ version }}</div>
 </template>
 
 <script>
+import spy from "cep-spy";
+
 export default {
   name: "version",
   data: () => ({
@@ -16,10 +18,10 @@ export default {
       return this.$root.$children[0];
     },
     isDev() {
-      return this.app.identity ? this.app.identity.isDev : false;
+      return spy.isDev;
     },
     version() {
-      return this.app.identity ? this.app.identity.extVersion : null;
+      return spy.extVersion;
     }
   }
 };
