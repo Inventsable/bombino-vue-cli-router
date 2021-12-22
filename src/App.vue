@@ -31,7 +31,7 @@ import { Menus, Panel } from "lokney";
 */
 
 // If you need to use evalScript, we need a specific method due to recent CORS policy changes in Adobe apps (as of AUG2021):
-import { evalScript } from "workaround";
+import { evalScript } from "cluecumber";
 
 export default {
   name: "App",
@@ -39,7 +39,7 @@ export default {
     Menus,
     Panel,
   },
-  mounted() {
+  async mounted() {
     // If you need CEP-Spy:
     // let spy = require('cep-spy').default;
     // console.log(spy)
